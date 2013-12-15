@@ -1,7 +1,22 @@
 <!DOCTYPE html>
+<?php 
+  
+    session_start(); 
+      
+    if( !isset($_SESSION['user']) ) 
+        $_SESSION['user'] = 'NO'; 
+  
+    if ( ($_SESSION['user']) != 'YES' ) 
+    { 
+        header("location:loginPage.php"); 
+    } 
+    else
+    { 
+      
+?> 
 <html>
   <head>
-    <title>Watches Store</title>
+    <title>CMS</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Bootstrap -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
@@ -28,10 +43,12 @@
           <!-- Collect the nav links, forms, and other content for toggling -->
           <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav">
-              <li><a href="home.php">Home</a></li>
-              <li><a href="watches.php">Watches</a></li>
-              <li class="active"><a href="#">Manage Database</a></li>
+              <li class="active"><a href="#">Query Database</a></li>
+              <li><a href="insertPage.php">Insert Data</a></li>
             </ul>
+            <form class="navbar-form navbar-right" action="logout.php">
+              <button type="submit" class="btn btn-danger"><strong>Log out</strong></button>
+            </form>
           </div><!-- /.navbar-collapse -->
         </nav>
 
@@ -56,7 +73,8 @@
               <div class = "col-lg-2 col-md-2 col-sm-3 col-xs-3">
                 <input type="submit" class="btn btn-danger btn-block" value="Execute!"/>
                 </br>
-                <button class="btn btn-success btn-block">Insert</button>
+                <!-- <button class="btn btn-success btn-block">Insert</button> -->
+                <!-- <button type="button" class="btn btn-success btn-block" onclick="window.location.href='insert.php'">Insert!</button> -->
               </div>
             </form>
           </div>
@@ -85,11 +103,14 @@
 
         ?>
 
-
+    <?php
+      if(mysql_num_fields($result) > 0)
+      {
+    ?>
     <!-- TABLE VALUES HERE -->         
     <div class = "row">
       <div class = "col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1 col-xs-10 col-xs-offset-1">
-        <h4><strong>Requested information</strong></h4>
+        <h4><strong>Requested information: <?php echo mysql_num_rows($result);?> results</strong></h4>
         <hr>
             <div class = "table-responsive">
               <table class = "table table-striped cf">
@@ -110,6 +131,7 @@
                       $i++;
                      } 
                     ?>
+                    <td><strong>TOOLS</strong></td>
                   </tr>
                 </thead>
                 <tbody>
@@ -118,7 +140,7 @@
                   {
                   ?>
                   <tr>
-                    <?php
+                      <?php
                       $i = 0;
                       while($i < mysql_num_fields($result))
                       {
@@ -132,6 +154,12 @@
                         $i++;
                       } 
                       ?>
+                      <td>
+                        <div class="btn-group btn-group-xs">
+                          <button type="button" class="btn btn-warning"><span class="glyphicon glyphicon-edit"></span></button>
+                          <button type="button" class="btn btn-danger"><span class="glyphicon glyphicon-remove"></span></button>
+                        </div>
+                      </td>
                   </tr>
                   <?php
                   } 
@@ -144,8 +172,11 @@
           mysql_free_result($result); 
           }
         ?>    
-          </div>
         </div>
+      </div>
+      <?php
+      }
+      ?>
 
       </div>
     </div>
@@ -155,3 +186,6 @@
     <script src = "js/bootstrap.js"></script>
   </body>
 </html>
+<?php 
+    } 
+?> 

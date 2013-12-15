@@ -30,13 +30,10 @@
             <ul class="nav navbar-nav">
               <li class="active"><a href="#">Home</a></li>
               <li><a href="watches.php">Watches</a></li>
-              <li><a href="manageDB.php">Manage Database</a></li>
+              <li></li>
             </ul>
-            <form class="navbar-form navbar-right" role="search">
-              <div class="form-group">
-                <input type="text" class="form-control" placeholder="Search">
-              </div>
-              <button type="submit" class="btn btn-default">Submit</button>
+            <form class="navbar-form navbar-right">
+              <button type="button" class="btn btn-success" onclick="window.location.href='loginPage.php'"><strong>Sign in</strong></button>
             </form>
           </div><!-- /.navbar-collapse -->
         </nav>

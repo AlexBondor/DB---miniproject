@@ -30,8 +30,10 @@
             <ul class="nav navbar-nav">
               <li><a href="home.php">Home</a></li>
               <li class="active"><a href="#">Watches</a></li>
-              <li><a href="manageDB.php">Manage Database</a></li>
             </ul>
+            <form class="navbar-form navbar-right">
+              <button type="button" class="btn btn-success" onclick="window.location.href='loginPage.php'"><strong>Sign in </strong></button>
+            </form>
           </div><!-- /.navbar-collapse -->
         </nav>
 
@@ -44,7 +46,7 @@
         }
         else
         {
-          $sqlCommand = "SELECT brand_name, name, gender, amount, price FROM watches JOIN brand ON watches.brand_id=brand.brand_id";
+          $sqlCommand = "SELECT brand_name, category_name, name, gender, amount, price FROM watches JOIN brand ON watches.brand_id=brand.brand_id JOIN category ON watches.category_id=category.category_id ORDER BY name";
         }
         ?>
 
@@ -79,10 +81,38 @@
               // select category
               2 => "SELECT category_name AS Category FROM category",
               // select sex
-              3 => "SELECT DISTINCT gender AS Gender FROM watches",
+              3 => "SELECT DISTINCT gender AS Gender FROM watches"
               );
 
+            // apply filter options
             ?>
+            <!--
+              <script type="text/javascript">
+                function updateFilter(index)
+                {
+                  alert(index);
+                  $.ajax({
+                    type: 'POST',
+                    url: 'watches.php',
+                    data: {'j': index},
+                  });
+                  <?php 
+                    $j = $_POST['j'];
+                    if($checked[$j] == "")
+                      $checked[$j] = "checked";
+                    else
+                      $checked[$j] = "";
+                  ?>
+                }
+              </script>
+              <?php
+              if(isset($_POST['test']))
+              {
+                //echo "YAY";
+              }
+              ?>
+            -->
+
             <!-- display filter menu -->
             <form method="post">
               <div class="col-lg-4 col-md-4 col-sm-5 col-xs-4">
@@ -105,7 +135,7 @@
                     ?>
                       <ul>
                         <div>
-                          <input type = "checkbox" id = "<?php echo $j; ?>" value = "ham" />
+                          <input name="test" type="checkbox" id="<?php echo $j; ?>" />  <!-- onclick="updateFilter('<?php echo $j; ?>'); this.form.submit();"/> -->
                           <?php
                             $j++;
                             echo ucfirst($row[0]);
@@ -119,9 +149,13 @@
                 ?>
               </div>
             </form>
-
+            
             <!-- display watches list -->
             <div class="col-lg-8 col-md-8 col-sm-7 col-xs-8">
+              <?php 
+                $result = mysql_query($sqlCommand);
+                echo "<h6>", mysql_num_rows($result), " results</h6>";
+              ?>
               <div class="list-group">
               <?php
                 $j = 0;
@@ -141,7 +175,7 @@
                         <div class="col-lg-10 col-md-9 col-sm-8 xol-xs-7">
                           <div class="pull-left">
                             <h4 class="list-group-item-heading"><?php $j++; echo ucfirst($row["name"]); ?></h4>
-                            <h5 class="list-group-item-heading"><?php echo ucfirst($row["brand_name"]), ", ", ucfirst($row["gender"]); ?></h5>
+                            <h5 class="list-group-item-heading"><?php echo ucfirst($row["brand_name"]), ", ", ucfirst($row["category_name"]), ", ", ucfirst($row["gender"]); ?></h5>
                           </div>
                           <div class="pull-right">
                             <h4 class="list-group-item-heading" style="color: #3c763d;"><?php $j++; echo ucfirst($row["price"]), "$"; ?></h4>
@@ -171,7 +205,6 @@
             <p class="pull-right"><a href="#">Back to top</a></p>
           </footer>
         </div>
-
       </div>
     </div>
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
