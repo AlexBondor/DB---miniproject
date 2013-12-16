@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Bootstrap -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
+    <script src='js/jquery-1.8.3.min.js'></script>
+    <script src='js/jquery.elevatezoom.js'></script>
   </head>
   <body>
 
@@ -62,11 +64,16 @@
         {
           $search = true;
           $searchquery = preg_replace('#[^a-z A-Z0-9$]#i', '', $_POST['searchQuery']);
-          $sqlCommand = "SELECT brand_name, category_name, name, gender, amount, price FROM watches JOIN brand ON watches.brand_id=brand.brand_id JOIN category ON watches.category_id=category.category_id WHERE brand_name LIKE '%$searchquery%' OR category_name LIKE '%$searchquery%' OR name LIKE '%$searchquery%' OR gender LIKE '%$searchquery%' OR price LIKE '%$searchquery%'";
+          // select for search
+          $sqlCommand = "SELECT watch_id, brand_name, category_name, name, gender, amount, price FROM watches JOIN brand ON watches.brand_id=brand.brand_id JOIN category ON watches.category_id=category.category_id WHERE brand_name LIKE '%$searchquery%' OR category_name LIKE '%$searchquery%' OR name LIKE '%$searchquery%' OR gender LIKE '%$searchquery%' OR price LIKE '%$searchquery%'";
         }
         else
         {
-          $sqlCommand = "SELECT brand_name, category_name, name, gender, amount, price FROM watches JOIN brand ON watches.brand_id=brand.brand_id JOIN category ON watches.category_id=category.category_id ORDER BY watch_id";
+          if($_POST['filter'] == 'applyFilter')
+            //TODO compute sqlCommand dinamically!!!
+            $sqlCommand = "SELECT watch_id, brand_name, category_name, name, gender, amount, price FROM watches JOIN brand ON watches.brand_id=brand.brand_id JOIN category ON watches.category_id=category.category_id WHERE brand_name = 'Adidas'"; 
+          else // select for displaying all
+            $sqlCommand = "SELECT watch_id, brand_name, category_name, name, gender, amount, price FROM watches JOIN brand ON watches.brand_id=brand.brand_id JOIN category ON watches.category_id=category.category_id";
         }
         ?>
 
@@ -103,39 +110,12 @@
               // select sex
               3 => "SELECT DISTINCT gender AS Gender FROM watches"
               );
-
-            // apply filter options
             ?>
-            <!--
-              <script type="text/javascript">
-                function updateFilter(index)
-                {
-                  alert(index);
-                  $.ajax({
-                    type: 'POST',
-                    url: 'watches.php',
-                    data: {'j': index},
-                  });
-                  <?php 
-                    $j = $_POST['j'];
-                    if($checked[$j] == "")
-                      $checked[$j] = "checked";
-                    else
-                      $checked[$j] = "";
-                  ?>
-                }
-              </script>
-              <?php
-              if(isset($_POST['test']))
-              {
-                //echo "YAY";
-              }
-              ?>
-            -->
+            
 
-            <!-- display filter menu -->
+          <!-- display filter menu -->
+          <div class="col-lg-4 col-md-4 col-sm-5 col-xs-4">
             <form method="post">
-              <div class="col-lg-4 col-md-4 col-sm-5 col-xs-4">
                 <?php
                 $i = 0;
                 $j = 0;
@@ -155,7 +135,7 @@
                     ?>
                       <ul>
                         <div>
-                          <input name="test" type="checkbox" id="<?php echo $j; ?>" />  <!-- onclick="updateFilter('<?php echo $j; ?>'); this.form.submit();"/> -->
+                          <input type="checkbox" id="<?php echo $j; ?>" />
                           <?php
                             $j++;
                             echo ucfirst($row[0]);
@@ -167,8 +147,10 @@
                   $i++;
                  } 
                 ?>
-              </div>
+              <button name="filter" value="applyFilter" type="submit" class="btn btn-md btn-success"><strong>Apply filter</strong></button>
             </form>
+          </div>
+            
             
             <!-- display watches list -->
             <div class="col-lg-8 col-md-8 col-sm-7 col-xs-8">
@@ -189,7 +171,8 @@
                     <div class="list-group-item">
                       <div class="row">
                         <div class="col-lg-2 col-md-3 col-sm-4 col-xs-5">
-                          <img class="img-rounded" src="images/default.png" alt="no image">
+                          <!-- <img class="img-rounded" src='images/small/1.png' data-zoom-image='images/large/1.png' style="width:auto; height:100px;"/> -->
+                          <?php echo "<img class='img-rounded' src='images/small/", $row["watch_id"], ".png' data-zoom-image='images/large/", $row["watch_id"], ".png' style='width:auto; height:80px;'>"; ?>
                         </div>
                         <br>
                         <div class="col-lg-10 col-md-9 col-sm-8 xol-xs-7">
@@ -227,9 +210,8 @@
         </div>
       </div>
     </div>
-    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-    <script src = "js/jquery.js"></script>
-    <!-- Include all compiled plugins (below), or include individual files as needed -->
-    <script src = "js/bootstrap.js"></script>
+    <script>
+      $(".img-rounded").elevateZoom({zoomWindowPosition: 10, zoomWindowOffetx: 10});
+    </script>
   </body>
 </html>

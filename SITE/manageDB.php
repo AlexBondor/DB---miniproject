@@ -90,11 +90,6 @@
         <?php  
           if(isset($_POST['query'])) //takes value from query input form
           {
-        ?>
-
-
-       
-        <?php
             $adress = "localhost";
             $user = "root";
             $pass = "root";
@@ -111,89 +106,89 @@
     <?php
       if(mysql_num_fields($result) > 0)
       {
-    ?>
-    <!-- TABLE VALUES HERE -->         
-    <div class = "row">
-      <div class = "col-lg-12 col-lg-offset-0 col-md-10 col-md-offset-1 col-xs-10 col-xs-offset-1">
-        <h4><strong>Requested information: <?php echo mysql_num_rows($result);?> results</strong></h4>
-        <hr>
-            <div class = "table-responsive">
-              <table class = "table table-striped cf">
-                <thead>
-                  <tr>
-                    <th><strong>TOOLS</strong></th>
-                    <?php
-                    $i = 0;
-                    while($i < mysql_num_fields($result))
-                    {
-                      $col = mysql_fetch_field($result, $i);
-                      ?>
-                        <th>
-                          <?php
-                        echo strtoupper($col->name);
-                          ?>
-                        </th>
-                      <?php
-                      $i++;
-                     } 
-                    ?>
-                  </tr>
-                </thead>
-                <tbody>
-                  <?php
-                  while($row = mysql_fetch_array($result))
-                  {
-                  ?>
-                  <tr>
+      ?>
+      <!-- TABLE VALUES HERE -->         
+      <div class = "row">
+        <div class = "col-lg-12 col-lg-offset-0 col-md-10 col-md-offset-1 col-xs-10 col-xs-offset-1">
+          <h4><strong>Requested information: <?php echo mysql_num_rows($result);?> results</strong></h4>
+          <hr>
+              <div class = "table-responsive">
+                <table class = "table table-striped cf">
+                  <thead>
+                    <tr>
+                      <th><strong>TOOLS</strong></th>
                       <?php
                       $i = 0;
-                      while($i <= mysql_num_fields($result))
+                      while($i < mysql_num_fields($result))
                       {
-                        if($i == 0)
-                        {
-                          echo "<td style='width:70px'>                                  
-                                  <form method='post' action='edit.php'>
-                                    <div>
-                                      <input class='hidden' name='id' value='", $row[0],"'>
-                                      <input class='hidden' name='table' value='", mysql_field_table($result, 0),"'>
-                                      <input class='hidden' name='row' value='", mysql_field_name($result, 0),"'>
-                                      <button type='submit' class='btn btn-warning btn-xs'><span class='glyphicon glyphicon-edit'></span></button>
-                                    </div>
-                                  </form>
-                                  <form method='post' action='remove.php'>
-                                    <div>
-                                      <input class='hidden' name='id' value='", $row[0],"'>
-                                      <input class='hidden' name='table' value='", mysql_field_table($result, 0),"'>
-                                      <input class='hidden' name='row' value='", mysql_field_name($result, 0),"'>
-                                      <button type='submit' class='btn btn-danger btn-xs'><span class='glyphicon glyphicon-remove'></span></button>
-                                    </div>
-                                  </form>
-                                </td>";
-                        }                          
-                        else
-                        {
-                          echo "<td>", ucfirst($row[$i-1]), "</td>";
-                        }     
+                        $col = mysql_fetch_field($result, $i);
+                        ?>
+                          <th>
+                            <?php
+                          echo strtoupper($col->name);
+                            ?>
+                          </th>
+                        <?php
                         $i++;
-                      } 
+                       } 
                       ?>
-                  </tr>
-                  <?php
-                  } 
-                  ?>     
-                </tbody>    
-              </table>
-            </div>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <?php
+                    while($row = mysql_fetch_array($result))
+                    {
+                    ?>
+                    <tr>
+                        <?php
+                        $i = 0;
+                        while($i <= mysql_num_fields($result))
+                        {
+                          if($i == 0)
+                          {
+                            echo "<td style='width:70px'>                                  
+                                    <form method='post' action='edit.php'>
+                                      <div>
+                                        <input class='hidden' name='id' value='", $row[0],"'>
+                                        <input class='hidden' name='table' value='", mysql_field_table($result, 0),"'>
+                                        <input class='hidden' name='row' value='", mysql_field_name($result, 0),"'>
+                                        <button type='submit' class='btn btn-warning btn-xs'><span class='glyphicon glyphicon-edit'></span></button>
+                                      </div>
+                                    </form>
+                                    <form method='post' action='remove.php'>
+                                      <div>
+                                        <input class='hidden' name='id' value='", $row[0],"'>
+                                        <input class='hidden' name='table' value='", mysql_field_table($result, 0),"'>
+                                        <input class='hidden' name='row' value='", mysql_field_name($result, 0),"'>
+                                        <button type='submit' class='btn btn-danger btn-xs'><span class='glyphicon glyphicon-remove'></span></button>
+                                      </div>
+                                    </form>
+                                  </td>";
+                          }                          
+                          else
+                          {
+                            echo "<td>", ucfirst($row[$i-1]), "</td>";
+                          }     
+                          $i++;
+                        } 
+                        ?>
+                    </tr>
+                    <?php
+                    } 
+                    ?>     
+                  </tbody>    
+                </table>
+              </div>
 
-        <?php
-          mysql_free_result($result); 
-          }
-        ?>    
+          <?php
+            mysql_free_result($result); 
+            }
+          ?>    
+          </div>
         </div>
-      </div>
-      <?php
-      }
-      ?>
+        <?php
+        }
+        ?>
 
       </div>
     </div>
