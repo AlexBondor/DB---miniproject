@@ -41,6 +41,8 @@
 		          <!-- Collect the nav links, forms, and other content for toggling -->
 		          <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 		            <ul class="nav navbar-nav">
+		              <li><a href="home.php">Home</a></li>
+		              <li><a href="watches.php">Watches</a></li>
 		              <li><a href="manageDB.php">Query Database</a></li>
 		              <li class="active"><a href="#">Insert Data</a></li>
 		            </ul>
@@ -112,7 +114,15 @@
 		              // select watches
 		              "watches" => "SELECT * FROM watches"
               		);
+
+              		//for getting max id from table
 					$result = mysql_query($query[$table]) or die("Query N/A");
+					$idRow = mysql_field_name($result, 0);
+					$temp = "SELECT MAX(". $idRow. ") FROM $table";
+					$res = mysql_query($temp);
+					$maxId = mysql_fetch_array($res);
+
+					//maxId[0] is the maximum id in table $table
 
 					$i = 0;
 					?>
@@ -125,7 +135,13 @@
 							echo "<input class='hidden' name='table' value='", $table, "'/>";
 		                	while($col = mysql_fetch_field($result, $i))
 		                	{
-								echo "<input class='form-control' name='", $col->name ,"' placeholder='", ucfirst($col->name), "'/><br>";
+		                		if($i == 0)
+		                		{
+
+		                			echo "<input class='hidden' name='id' value='", $maxId[0] + 1, "'/><br>";		                			
+		                		}
+		                		else
+									echo "<input class='form-control' name='", $col->name ,"' placeholder='", ucfirst($col->name), "'/><br>";
 		                		$i++;
 		                	}
 		                	?>

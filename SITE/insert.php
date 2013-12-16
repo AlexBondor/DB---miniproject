@@ -20,7 +20,7 @@
     { 
     	echo $_POST['table'];
     	$table = $_POST['table'];
-		$query = array(
+		  $query = array(
           // select brand
           "brand" => "SELECT brand_id, brand_name AS Brand FROM brand",
           // select category
@@ -36,8 +36,9 @@
   		);
 		$result = mysql_query($query[$table]) or die("Query N/A");
 
-		$i=0;
-		$data = "";
+    $id = $_POST['id'];
+		$i=1;
+		$data = "'$id',";
 		// compute insert string here
 		while($col = mysql_fetch_field($result, $i))
     	{

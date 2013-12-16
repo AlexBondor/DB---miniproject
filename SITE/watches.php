@@ -30,10 +30,30 @@
             <ul class="nav navbar-nav">
               <li><a href="home.php">Home</a></li>
               <li class="active"><a href="#">Watches</a></li>
-            </ul>
-            <form class="navbar-form navbar-right">
-              <button type="button" class="btn btn-success" onclick="window.location.href='loginPage.php'"><strong>Sign in </strong></button>
-            </form>
+              <?php 
+                session_start(); 
+        
+                if( !isset($_SESSION['user']) ) 
+                    $_SESSION['user'] = 'NO'; 
+              
+                if ( ($_SESSION['user']) != 'NO' ) 
+                { 
+                    
+                  echo "
+                      <li><a href='manageDB.php''>Query Database</a></li>
+                      <li><a href='insertPage.php'>Insert Data</a></li>";
+                  echo
+                      "</ul>
+                      <form class='navbar-form navbar-right' action='logout.php'>
+                        <button type='submit' class='btn btn-danger'><strong>Log out</strong></button>
+                      </form>";
+                }
+                else //print sign in button
+                  echo
+                      "</ul>
+                      <form class='navbar-form navbar-right' action='loginPage.php'>
+                        <button type='submit' class='btn btn-success'><strong>Sign in</strong></button>
+                      </form>";?>
           </div><!-- /.navbar-collapse -->
         </nav>
 
@@ -42,11 +62,11 @@
         {
           $search = true;
           $searchquery = preg_replace('#[^a-z A-Z0-9$]#i', '', $_POST['searchQuery']);
-          $sqlCommand = "SELECT brand_name, name, gender, amount, price FROM watches JOIN brand ON watches.brand_id=brand.brand_id WHERE brand_name LIKE '%$searchquery%' OR name LIKE '%$searchquery%' OR gender LIKE '%$searchquery%' OR price LIKE '%$searchquery%'";
+          $sqlCommand = "SELECT brand_name, category_name, name, gender, amount, price FROM watches JOIN brand ON watches.brand_id=brand.brand_id JOIN category ON watches.category_id=category.category_id WHERE brand_name LIKE '%$searchquery%' OR category_name LIKE '%$searchquery%' OR name LIKE '%$searchquery%' OR gender LIKE '%$searchquery%' OR price LIKE '%$searchquery%'";
         }
         else
         {
-          $sqlCommand = "SELECT brand_name, category_name, name, gender, amount, price FROM watches JOIN brand ON watches.brand_id=brand.brand_id JOIN category ON watches.category_id=category.category_id ORDER BY name";
+          $sqlCommand = "SELECT brand_name, category_name, name, gender, amount, price FROM watches JOIN brand ON watches.brand_id=brand.brand_id JOIN category ON watches.category_id=category.category_id ORDER BY watch_id";
         }
         ?>
 

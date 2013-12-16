@@ -30,11 +30,30 @@
             <ul class="nav navbar-nav">
               <li class="active"><a href="#">Home</a></li>
               <li><a href="watches.php">Watches</a></li>
-              <li></li>
-            </ul>
-            <form class="navbar-form navbar-right">
-              <button type="button" class="btn btn-success" onclick="window.location.href='loginPage.php'"><strong>Sign in</strong></button>
-            </form>
+              <?php 
+                session_start(); 
+        
+                if( !isset($_SESSION['user']) ) 
+                    $_SESSION['user'] = 'NO'; 
+              
+                if ( ($_SESSION['user']) != 'NO' ) 
+                { 
+                    
+                  echo "
+                      <li><a href='manageDB.php''>Query Database</a></li>
+                      <li><a href='insertPage.php'>Insert Data</a></li>";
+                  echo
+                      "</ul>
+                      <form class='navbar-form navbar-right' action='logout.php'>
+                        <button type='submit' class='btn btn-danger'><strong>Log out</strong></button>
+                      </form>";
+                }
+                else //print sign in button
+                  echo
+                      "</ul>
+                      <form class='navbar-form navbar-right' action='loginPage.php'>
+                        <button type='submit' class='btn btn-success'><strong>Sign in</strong></button>
+                      </form>";?>
           </div><!-- /.navbar-collapse -->
         </nav>
 
