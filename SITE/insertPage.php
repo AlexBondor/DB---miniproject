@@ -73,10 +73,8 @@
 	            $sql = "SHOW TABLES FROM $nameDB";
 				$result = mysql_query($sql);
 
-				if (!$result) {
-				    echo "DB Error, could not list tables\n";
-				    echo 'MySQL Error: ' . mysql_error();
-				    exit;
+				if (!$result){
+        			header("location:error.php");
 				}?>
 				<!-- select table dropdown -->
 		        <form method="post">
@@ -116,7 +114,9 @@
               		);
 
               		//for getting max id from table
-					$result = mysql_query($query[$table]) or die("Query N/A");
+					$result = mysql_query($query[$table]);
+					if(!$result)
+        				header("location:error.php");
 					$idRow = mysql_field_name($result, 0);
 					$temp = "SELECT MAX(". $idRow. ") FROM $table";
 					$res = mysql_query($temp);

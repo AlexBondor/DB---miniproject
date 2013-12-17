@@ -23,7 +23,9 @@
         $table = $_POST['table'];
         $query = "DELETE FROM $table WHERE $idRowName = $idToDelete;";
         //echo $query;
-        $result = mysql_query($query) or die("Element not found");
+        $result = mysql_query($query);
+        if(!$result)
+            header("location:error.php");
         //echo $result;
 
 

@@ -69,7 +69,7 @@
         <!-- Wrapper for slides -->
         <div class="carousel-inner">
           <div class="item active">
-            <img src="images/1st.png" class="img-responsive">
+            <img src="images/1st.png">
             <div class="carousel-caption">
             </div>
           </div>

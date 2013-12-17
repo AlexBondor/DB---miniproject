@@ -8,7 +8,7 @@
    $password="root"; 
    $DBname="phplogin"; 
      
-   $connect=mysql_connect($adress, $user, $password) or die("Cannot connect"); 
+   $connect=mysql_connect($adress, $user, $password) or die("Cannot connect to database!"); 
    mysql_select_db($DBname, $connect); 
  
    ob_start(); 

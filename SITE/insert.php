@@ -18,7 +18,7 @@
     } 
     else
     { 
-    	echo $_POST['table'];
+    	//echo $_POST['table'];
     	$table = $_POST['table'];
 		  $query = array(
           // select brand
@@ -34,8 +34,9 @@
           // select watches
           "watches" => "SELECT * FROM watches"
   		);
-		$result = mysql_query($query[$table]) or die("Query N/A");
-
+		$result = mysql_query($query[$table]);
+    if(!$result)
+        header("location:error.php");
     $id = $_POST['id'];
 		$i=1;
 		$data = "'$id',";
@@ -49,9 +50,12 @@
     	}
 
     	$data = substr($data, 0, -1);
-    	echo $data;
+    	//echo $data;
     	if($data != "")
-    		mysql_query("INSERT INTO $table VALUES($data)")or die("Couldn't insert data!");
-    	header("location:insertPage.php");  
+    		$result = mysql_query("INSERT INTO $table VALUES($data)");
+      if(!$result)
+        header("location:error.php");
+    	else
+        header("location:insertPage.php");  
     }
 ?> 

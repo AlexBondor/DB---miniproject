@@ -24,7 +24,9 @@ else
         $idToEdit = $_POST['id'];
         $table = $_POST['table'];
         $query = "SELECT * FROM $table WHERE $idRowName = $idToEdit";
-        $result = mysql_query($query) or die("Couldn't execute query!");
+        $result = mysql_query($query);
+       	if(!$result)
+        	header("location:error.php");
  		
         //compute data to insert
 		$i = 0;
@@ -49,7 +51,9 @@ else
     	
     	$sql = "UPDATE $table SET " . $data . " WHERE $idRowName='$idToEdit'" ;
     	//echo $sql;
-    	$res = mysql_query($sql) or die("Error broh");
+    	$res = mysql_query($sql);
+    	if(!$res)
+        	header("location:error.php");
 
     	//echo $res;
 

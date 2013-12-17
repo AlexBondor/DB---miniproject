@@ -73,7 +73,7 @@
           <div class = "col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1 col-sm-10 col-sm-offset-1 col-xs-10 col-xs-offset-1">
             <form method = "post">
               <div class = "col-lg-5 col-lg-offset-3 col-md-5 col-md-offset-3 col-sm-5 col-sm-offset-2 col-xs-8">
-                <textarea name = "query" class = "form-control" rows = "5" placeholder = "Write SQL query here.."></textarea>
+                <textarea name = "query" class = "form-control" rows = "5" placeholder = "<?php echo $_POST['query'] == "" ? 'Write SQL query here..' : $_POST['query']?>"></textarea>
               </div>
               <div class = "col-lg-2 col-md-2 col-sm-3 col-xs-3">
                 <input type="submit" class="btn btn-danger btn-block" value="Execute!"/>
