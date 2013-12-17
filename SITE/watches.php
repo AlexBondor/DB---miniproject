@@ -70,9 +70,103 @@
         else
         {
           if($_POST['filter'] == 'applyFilter')
-            //TODO compute sqlCommand dinamically!!!
-            $sqlCommand = "SELECT watch_id, brand_name, category_name, name, gender, amount, price FROM watches JOIN brand ON watches.brand_id=brand.brand_id JOIN category ON watches.category_id=category.category_id WHERE brand_name = 'Adidas'"; 
-          else // select for displaying all
+          {
+            $adress = "localhost";
+            $user = "root";
+            $pass = "root";
+            $nameDB  = "watchstore";
+            
+            $conn = mysql_connect($adress, $user, $pass) or die("Cannot connect to SQL"); // connection to DB
+            mysql_select_db($nameDB, $conn) or die("No such database!");
+
+            $query = array(
+            // select brand
+            1 => "SELECT brand_name FROM brand",
+            // select category
+            2 => "SELECT category_name FROM category",
+            // select sex
+            3 => "SELECT DISTINCT gender FROM watches"
+            );
+
+            $i=0;
+            $cols = array(); // brand_name or category_name or gender
+            $string = array(0 => "(",
+                            1 => "(",
+                            2 => "("); // 'Adidas','Casual'....
+            $brand = false;
+            $category = false;
+            $gender = false;
+            while($i < 3)
+            {
+              $result = mysql_query($query[$i+1]);
+              $col = mysql_fetch_field($result, 0);
+              while($row = mysql_fetch_array($result))
+              {
+                $item = $_POST[$row[0]];
+                if($item != "")
+                {
+                  if(!$brand && $col->name == "brand_name")
+                  {
+                    $cols[$i] .= $col->name; 
+                    $brand = true;
+                  }
+                  if(!$category && $col->name == "category_name")
+                  {
+                    $cols[$i] .= $col->name;
+                    $category = true;
+                  }
+                  if(!$gender && $col->name == "gender")
+                  {
+                    $cols[$i] .= $col->name;
+                    $gender = true;
+                  }
+                  $string[$i] .= "'" . $row[0] . "',";
+                }
+              }
+              $i++;
+            }
+            $i=0;
+            while($i<3) // finish string array
+            {
+              if($string[$i] != "(")
+              {
+                $string[$i] = substr($string[$i], 0, -1); //cut last char
+                $string[$i] .= ")"; //concat ")" to string                 
+              }
+              else
+                $string[$i] = ""; //empty string
+              $i++;            
+            }
+
+            $data = "WHERE ";
+            $i=0;
+            while($i<3) //compute $data
+            {
+              if($cols[$i] != "")
+              {
+                $data .= $cols[$i] . " IN " . $string[$i] . " AND ";                
+              }
+              $i++;            
+            }
+            $min = $_POST['min'] == "min" ? 0 : $_POST['min'];
+            $max = $_POST['max'] == "max" ? 50000 : $_POST['max'];
+            if($data != "WHERE ")
+            {
+              $data = substr($data, 0, -5);// cut the final " AND "
+              //echo $min, " ", $max;
+              $data .= " AND price BETWEEN $min AND $max";
+              //echo $data;
+              $sqlCommand = "SELECT watch_id, brand_name, category_name, name, gender, amount, price FROM watches JOIN brand ON watches.brand_id=brand.brand_id JOIN category ON watches.category_id=category.category_id $data"; 
+            }
+            else
+            {
+              $data .= "price BETWEEN $min AND $max";
+              $sqlCommand = "SELECT watch_id, brand_name, category_name, name, gender, amount, price FROM watches JOIN brand ON watches.brand_id=brand.brand_id JOIN category ON watches.category_id=category.category_id $data"; 
+            }
+              
+          
+          }
+            else // select for displaying all
             $sqlCommand = "SELECT watch_id, brand_name, category_name, name, gender, amount, price FROM watches JOIN brand ON watches.brand_id=brand.brand_id JOIN category ON watches.category_id=category.category_id";
         }
         ?>
@@ -118,7 +212,6 @@
             <form method="post">
                 <?php
                 $i = 0;
-                $j = 0;
                 while($i < 3)
                 {
                   $result = mysql_query($query[$i+1]);
@@ -135,9 +228,8 @@
                     ?>
                       <ul>
                         <div>
-                          <input type="checkbox" id="<?php echo $j; ?>" />
+                          <input type="checkbox" name="<?php echo ucfirst($row[0]); ?>" <?php echo $_POST[$row[0]] != "" ? "checked" : ""?>/>
                           <?php
-                            $j++;
                             echo ucfirst($row[0]);
                           ?>
                         </div>
@@ -147,7 +239,19 @@
                   $i++;
                  } 
                 ?>
-              <button name="filter" value="applyFilter" type="submit" class="btn btn-md btn-success"><strong>Apply filter</strong></button>
+              <div>
+                <strong>Price</strong>
+              </div>
+              <br>
+              <div>
+                <input type="text" name="min" style="width:70px" value="<?php echo $_POST['min'] == "" ? min : $_POST['min']?>" /> -
+                <input type="text" name="max" style="width:70px" value="<?php echo $_POST['max'] == "" ? max : $_POST['max']?>" />
+              </div>
+              <br>
+              <br>
+              <div class="col-lg-6 col-md-8 col-sm-10 col-xs-12">
+                <button name="filter" value="applyFilter" type="submit" class="btn btn-sm btn-success btn-block"><strong>Apply filter</strong></button>
+              </div>
             </form>
           </div>
             
